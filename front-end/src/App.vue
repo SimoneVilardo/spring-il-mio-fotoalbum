@@ -1,30 +1,48 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+// IMPORT LIBS
+import { onMounted, ref } from 'vue';
+import axios from 'axios';
+
+// IMPORT COMPONENTS
+import PhotoIndex from './components/PhotoIndex.vue';
+import PhotoShow from './components/PhotoShow.vue';
+
+// DATA
+const photos = ref(null);
+const photoActive = ref(null);
+
+// FUNCTIONS
+const getPhotos = async () => {
+  const data = await axios.get("http://localhost:8080/api/photos");
+  photos.value = data.data;
+};
+const openPhoto = (id) => {
+  photos.value.forEach((photo) => {
+    if (photo.id === id) {
+      photoActive.value = photo;
+    }
+  });
+};
+const closePhoto = () => {
+  photoActive.value = null;
+  getPhotos();
+};
+
+// HOOKS
+onMounted(getPhotos);
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <photo-index v-if="photoActive == null" :photos="photos" @open-photo="openPhoto" />
+        <photo-show v-else :photo="photoActive" @close-photo="closePhoto" />
+      </div>
+    </div>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+<style lang="scss" scoped>
+@use './styles/generals.scss' as *;
 </style>

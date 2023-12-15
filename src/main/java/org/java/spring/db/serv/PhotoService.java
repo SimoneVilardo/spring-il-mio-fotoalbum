@@ -33,4 +33,8 @@ public class PhotoService {
         
         photoRepository.deleteById(id);
     }
+    
+    public List<Photo> findByVisibleTrue(){
+        return photoRepository.findByVisibleTrue();
+    }
 }

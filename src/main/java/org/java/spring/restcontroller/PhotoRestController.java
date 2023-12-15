@@ -21,7 +21,7 @@ public class PhotoRestController {
     @GetMapping
     public ResponseEntity<List<Photo>> getIndex() {
 
-        List<Photo> photos = photoService.findAll();
+        List<Photo> photos = photoService.findByVisibleTrue();
 
         return new ResponseEntity<>(photos, HttpStatus.OK);
     }
