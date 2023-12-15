@@ -31,6 +31,7 @@ public class Photo {
     private String description;
     
     @Column(nullable = false)
+    @NotBlank(message = "Url non può essere vuoto")
     @URL(protocol = "https", message = "Devi inserire un URL valido (Protocollo HTTPS)")
     private String url;
 	
