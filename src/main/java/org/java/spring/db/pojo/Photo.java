@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Photo {
@@ -39,6 +40,8 @@ public class Photo {
 	private boolean visible;
     
     @ManyToMany
+    @Column(nullable=false)
+    @Size(min = 1, message = "*devi selezionare almeno una categoria")
     private List<Category> categories;
 	
 	

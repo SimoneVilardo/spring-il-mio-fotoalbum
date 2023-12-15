@@ -46,6 +46,9 @@
                                         <label th:for="${'category-' + category.id}" th:text="${category.getName()}" class="control-label mb-2"></label>
                                         <input type="checkbox" class="ms-3" th:id="${'category-' + category.id}" th:field="${photo.categories}" th:value="*{id}">
                                     </div>
+                                    <div th:if="${#fields.hasErrors('categories')}" class="error-message text-center col-6 text-red mt-3">
+	                                    <p th:errors="*{categories}" class="text-danger"></p>
+	                                </div>
                                     <div class="col-12 text-center">
                                         <button type="submit" class="btn btn-primary px-5">Invia</button>
                                     </div>
