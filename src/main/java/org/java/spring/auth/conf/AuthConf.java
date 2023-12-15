@@ -22,11 +22,12 @@ public class AuthConf {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         
-        http.authorizeHttpRequests()
-            .requestMatchers("/**").permitAll()
-            .and().formLogin()
-            .and().logout()
-        ;
+    	http.authorizeHttpRequests()
+    	.requestMatchers("/api/**").permitAll()
+        .requestMatchers("/**").hasAuthority("ADMIN")
+        .and().formLogin()
+        .and().logout()
+    ;
         
         return http.build();
     }
