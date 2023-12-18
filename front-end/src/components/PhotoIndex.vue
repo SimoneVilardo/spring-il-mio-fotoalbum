@@ -1,59 +1,79 @@
 <script setup>
 // IMPORT LIBS
-import { defineProps, ref, computed } from 'vue'; 
+import { onMounted, computed, ref } from 'vue';
+import axios from 'axios';
+
+// IMPORT COMPONENTS
+import PhotoShow from './PhotoShow.vue';
 
 // DATA
+const photos = ref(null);
+const photoActive = ref(null);
 const nomeFilter = ref('');
 
-// EMITS
-const emits = defineEmits(["openPhoto"]);
-
-
 // COMPUTED PROPERTY
-const filteredPhotos = computed(() => {
+const newPhotos = computed(() => {
     const searchTerm = nomeFilter.value.toLowerCase().trim();
-    return searchTerm ? props.photos.filter(photo => photo.name.toLowerCase().includes(searchTerm)) : props.photos;
+    return searchTerm ? photos.value.filter(photo => photo.name.toLowerCase().includes(searchTerm)) : photos.value;
 });
 
-// PROPS
-const props = defineProps({
-    photos: {
-        type: Array,
-        required: true
-    }
-});
+// FUNCTIONS
+const getPhotos = async () => {
+    const data = await axios.get("http://localhost:8080/api/photos");
+    photos.value = data.data;
+};
+const openPhoto = (id) => {
+    photos.value.forEach((photo) => {
+        if (photo.id === id) {
+            photoActive.value = photo;
+        }
+    });
+};
+const closePage = () => {
+    photoActive.value = null;
+    getPhotos();
+};
+
+// HOOKS
+onMounted(getPhotos);
 </script>
+
 <template>
-    <h1 class="text-center">LE MIE FOTO</h1>
-    <form class="index-filter-form py-5">
-        <input type="text" placeholder="Filtra le foto per nome" class="form-control d-inline-block" v-model="nomeFilter">
-    </form>
-    <table class="table table-dark table-hover index-table">
-        <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Nome</th>
-                <th scope="col">Strumenti</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="photo in filteredPhotos" :key="photo.id">
-                <th scope="row" v-text="photo.id"></th>
-                <td v-text="photo.name"></td>
-                <td>
-                    <button class="btn btn-info" @click="$emit('openPhoto', photo.id)">
-                        <i class="fas fa-eye"></i>
+    <div class="col-12" v-if="photoActive == null">
+        <div class="row">
+            <div class="col-12 text-center py-5">
+                <router-link :to="{ name: 'contact' }">
+                    <button class="btn btn-primary">
+                        <span>Contattaci</span>
                     </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                </router-link>
+            </div>
+            <div class="col-12 d-flex justify-content-center">
+                <form class="index-filter-form py-5 w-50" @submit.prevent="">
+                    <input type="text" placeholder="Filtra le foto per nome"
+                        class="form-control d-inline-block border-2 border-black py-2" v-model="nomeFilter">
+                </form>
+            </div>
+            <div class="col-12 py-3">
+                <div class="row justify-content-center">
+                    <div class="col-6 p-5" v-for="photo in newPhotos" :key="photo.id">
+                        <div class="card text-center" style="width: 500px">
+                            <img :src="photo.url" class="card-img-top" style="height: 400px">
+                            <div class="card-body py-5">
+                                <h5 class="card-title" v-text="photo.name"></h5>
+                            </div>
+                            <div class="card-footer py-3">
+                                <button class="btn btn-info" @click="openPhoto(photo.id)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <photo-show v-else :photo="photoActive" @close-page="closePage" />
 </template>
 
-<style lang="scss" scoped>
-@use '../styles/generals.scss' as *;
-
-.index-table {
-    width: 50vw !important;
-}
-</style>
+<style lang="scss" scoped></style>
