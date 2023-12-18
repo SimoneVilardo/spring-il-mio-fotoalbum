@@ -22,13 +22,14 @@ public class AuthConf {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         
-    	http.csrf().disable()
-    	.authorizeHttpRequests()
-    	.requestMatchers("/api/**").permitAll()
-        .requestMatchers("/**").hasAuthority("ADMIN")
-        .and().formLogin()
-        .and().logout()
-    ;
+        http.csrf().disable()
+        .authorizeHttpRequests()
+            .requestMatchers("/api/**").permitAll()
+            .requestMatchers("/contacts/**").hasAuthority("SUPER-ADMIN")
+            .requestMatchers("/**").hasAnyAuthority("ADMIN", "SUPER-ADMIN")
+            .and().formLogin()
+            .and().logout()
+        ;
         
         return http.build();
     }

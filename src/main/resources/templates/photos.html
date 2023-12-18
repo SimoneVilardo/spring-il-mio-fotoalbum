@@ -13,49 +13,49 @@
             <div class="container border rounded-5 shadow my-5">
                 <div class="row justify-content-center p-4">
                     <div class="col-12 text-center py-5">
-						<a href="/contacts" class="btn btn-dark">Lista contatti</a>
+                        <a href="/contacts" class="btn btn-dark" sec:authorize="hasAnyAuthority('SUPER-ADMIN')">Lista contatti</a>
                         <a href="/categories" class="btn btn-primary">Lista categorie</a>
                         <a href="/photos/create" class="btn btn-success">Aggiungi foto</a>
                         <a href="/logout" class="btn btn-danger">Logout</a>
-                        </div>
-                        <div class="col-12 py-3">
-                            <form>
+                    </div>
+                    <div class="col-12 py-3">
+                        <form>
                             <div class="input-group mb-3">
-                              <input type="text" class="form-control" placeholder="Filtra le pizze per nome" name="name" th:value="${name}">
-                              <button class="btn btn-outline-secondary text-black rounded-1" type="submit">Cerca</button>
+                                <input type="text" class="form-control" placeholder="Filtra le pizze per nome" name="name" th:value="${name}">
+                                <button class="btn btn-outline-secondary text-black rounded-1" type="submit">Cerca</button>
                             </div>
                         </form>
                     </div>
-                        <div class="col-12 py-3">
+                    <div class="col-12 py-3">
                         <table class="table table-hover text-center">
-                          <thead>
-                            <tr>
-                              <th scope="col">ID</th>
-                              <th scope="col">Titolo</th>
-                              <th scope="col">Visibile</th>
-                              <th scope="col">Strumenti</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr th:each="photo : ${photos}">
-                                  <th scope="row" th:text="${photo.id}"></th>
-                                  <td th:text="${photo.name}">Mark</td>
-                                  <td th:text="${photo.visible ? 'Si' : 'No'}"></td>
-                                  <td>
-                                    <a th:href="@{/photos/{photoId} (photoId=${photo.getId()})}" class="btn btn-info">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a th:href="@{/photos/edit/{photoId} (photoId=${photo.getId()})}" class="btn btn-warning">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form style="display:inline-block" th:action="@{/photos/delete/{photoId} (photoId=${photo.getId()})}" method="POST" onsubmit="return confirm('Sei sicuro?')">
-                                        <button type="submit" class="btn btn-danger">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                          </tbody>
+                              <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Titolo</th>
+                                    <th scope="col">Visibile</th>
+                                    <th scope="col">Strumenti</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr th:each="photo : ${photos}">
+                                    <th scope="row" th:text="${photo.id}"></th>
+                                    <td th:text="${photo.name}"></td>
+                                    <td th:text="${photo.visible ? 'Si' : 'No'}"></td>
+                                    <td>
+                                        <a th:href="@{/photos/{photoId} (photoId=${photo.getId()})}" class="btn btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a th:href="@{/photos/edit/{photoId} (photoId=${photo.getId()})}" class="btn btn-warning">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form style="display:inline-block" th:action="@{/photos/delete/{photoId} (photoId=${photo.getId()})}" method="POST" onsubmit="return confirm('Sei sicuro?')">
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                              </tbody>
                         </table>
                     </div>
                 </div>

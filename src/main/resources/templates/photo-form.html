@@ -14,6 +14,9 @@
 				<div class="row justify-content-center p-4">
                     <div class="col-12">
                         <div th:replace="frags :: homebutton"></div>
+                        	<div class="col-12 text-center mt-5" th:if="${photo.checked == true}">
+							<p class="text-danger fw-bold">!!! La foto non può essere pubblicata perché è in revisione da parte di un superAdmin !!!</p>
+						</div>
                         <div class="col-12">
 							<div class="row">
                                 <form th:object="${photo}" method="POST">
@@ -33,7 +36,7 @@
                                         <input th:field="*{url}" type="url" name="url" id="url" placeholder="Inserisci l'url della foto" class="form-control" th:errorClass="is-invalid" required>
                                         <div th:replace="frags :: errorDiv('url')"></div>
                                     </div>
-                                    <div class="form-group my-5">
+                                    <div class="form-group my-5" th:if="*{checked == false}">
                                         <label for="visible" class="my-2">Visibile</label>
                                         <select th:field="*{visible}" name="visible" id="visible" class="form-control" th:errorClass="is-invalid" required>
                                             <option value="0">No</option>
@@ -41,14 +44,22 @@
                                         </select>
                                         <div th:replace="frags :: errorDiv('visible')"></div>
                                     </div>
+                                    <div class="form-group my-5" sec:authorize="hasAnyAuthority('SUPER-ADMIN')">
+                                        <label for="visible" class="my-2">Nascondi Foto</label>
+                                        <select th:field="*{checked}" name="checked" id="checked" class="form-control" th:errorClass="is-invalid" required>
+                                            <option value="0">No</option>
+                                            <option value="1">Si</option>
+                                        </select>
+                                        <div th:replace="frags :: errorDiv('checked')"></div>
+                                    </div>
                                     <div class="form-group d-flex flex-wrap my-5">
                                         <div class="col-12" th:each="category : ${categories}" th:object="${category}">                                 
                                         <label th:for="${'category-' + category.id}" th:text="${category.getName()}" class="control-label mb-2"></label>
                                         <input type="checkbox" class="ms-3" th:id="${'category-' + category.id}" th:field="${photo.categories}" th:value="*{id}">
                                     </div>
-                                    <div th:if="${#fields.hasErrors('categories')}" class="error-message text-center col-6 text-red mt-3">
-	                                    <p th:errors="*{categories}" class="text-danger"></p>
-	                                </div>
+                                    <div th:if="${#fields.hasErrors('categories')}" class="text-danger col-6 text-red mt-3">
+                                        <p th:errors="*{categories}" class="category-error"></p>
+                                    </div>
                                     <div class="col-12 text-center">
                                         <button type="submit" class="btn btn-primary px-5">Invia</button>
                                     </div>

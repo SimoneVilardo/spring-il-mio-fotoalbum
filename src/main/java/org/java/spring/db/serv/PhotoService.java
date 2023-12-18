@@ -19,8 +19,17 @@ public class PhotoService {
     public Photo findById(int id) {
         return photoRepository.findById(id).get();
     }
-    public List<Photo> findByName(String name){
+    public List<Photo> findByName(String name, int userId){
+        return photoRepository.findByNameContainingIgnoreCaseAndUser_Id(name, userId);
+    }
+    public List<Photo> findByNameSuperAdmin(String name){
         return photoRepository.findByNameContainingIgnoreCase(name);
+    }
+    public List<Photo> findByUserId(int id){
+        return photoRepository.findByUserId(id);
+    }
+    public List<Photo> findByVisibleTrue(){
+        return photoRepository.findByVisibleTrue();
     }
     public void save(Photo photo) {
         photoRepository.save(photo);
@@ -32,9 +41,5 @@ public class PhotoService {
     public void deleteById(int id) {
         
         photoRepository.deleteById(id);
-    }
-    
-    public List<Photo> findByVisibleTrue(){
-        return photoRepository.findByVisibleTrue();
     }
 }
